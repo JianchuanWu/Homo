@@ -1,14 +1,14 @@
 package org.homo.orderdemo.repository;
 
 import org.homo.authority.model.User;
-import org.homo.core.annotation.Repository;
 import org.homo.orderdemo.model.Order;
 import org.homo.core.repository.AbstractRepository;
+import org.springframework.stereotype.Repository;
 
 /**
  * @author wujianchuan 2018/12/26
  */
-@Repository(session = "order")
+@Repository
 public class OrderRepositoryImpl extends AbstractRepository<Order> implements OrderRepository {
 
     @Override

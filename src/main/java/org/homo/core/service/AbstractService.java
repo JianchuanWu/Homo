@@ -33,12 +33,12 @@ public abstract class AbstractService {
         this.session = SessionFactory.getSession(service.session());
     }
 
-    public Object handle(BiFunction<HomoRequest, ApplicationContext, Object> function, HomoRequest request) throws SQLException {
+    public Object handle(BiFunction<HomoRequest, Session, Object> function, HomoRequest request) throws SQLException {
 
         this.before(function);
-        Object result = function.apply(request, this.context);
+        Object result = function.apply(request, this.session);
         try {
-            this.after(function, result);
+            this.after(function, this.session);
         } catch (SQLException e) {
             this.transaction.rollBack();
         }
@@ -50,7 +50,7 @@ public abstract class AbstractService {
      *
      * @param function 执行函数
      */
-    private void before(BiFunction<HomoRequest, ApplicationContext, Object> function) throws SQLException {
+    private void before(BiFunction<HomoRequest, Session, Object> function) throws SQLException {
 
         this.transactionAnnotation(function.toString());
         this.session.open();
@@ -65,7 +65,7 @@ public abstract class AbstractService {
      *
      * @param function 执行函数
      */
-    private void after(BiFunction<HomoRequest, ApplicationContext, Object> function, Object result) throws SQLException {
+    private void after(BiFunction<HomoRequest, Session, Object> function, Object result) throws SQLException {
 
         if (this.homoTransactionAnnotation != null && this.homoTransactionAnnotation.open()) {
             this.transaction.commit();
@@ -74,7 +74,7 @@ public abstract class AbstractService {
         this.notifyAllListener(function, result);
     }
 
-    private void notifyAllListener(BiFunction<HomoRequest, ApplicationContext, Object> function, Object result) {
+    private void notifyAllListener(BiFunction<HomoRequest, Session, Object> function, Object result) {
         Map<String, Object> source = new HashMap<>(2);
         source.put("field", fieldMapper.get(function.toString()));
         source.put("result", result);

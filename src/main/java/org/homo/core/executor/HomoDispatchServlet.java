@@ -3,6 +3,7 @@ package org.homo.core.executor;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.homo.authority.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -20,11 +21,13 @@ import java.io.IOException;
 class HomoDispatchServlet {
 
     private final ControllerFactory controllerFactory;
+    private final ApplicationContext applicationContext;
     private final ObjectMapper mapper = new ObjectMapper();
 
     @Autowired
-    public HomoDispatchServlet(ControllerFactory controllerFactory) {
+    public HomoDispatchServlet(ControllerFactory controllerFactory, ApplicationContext applicationContext) {
         this.controllerFactory = controllerFactory;
+        this.applicationContext = applicationContext;
     }
 
     @RequestMapping(
@@ -34,7 +37,7 @@ class HomoDispatchServlet {
     @ResponseBody
     void service(@PathVariable String bundleName, @PathVariable String executorName, HttpServletRequest request, HttpServletResponse response) throws Exception {
         User user = User.newInstance("Home", "霍姆");
-        HomoRequest homoRequest = HomoRequest.newInstance(request, user);
+        HomoRequest homoRequest = HomoRequest.newInstance(request, user, applicationContext);
         String contextPath = request.getContextPath();
         String url = (contextPath.length() > 1 ? contextPath.substring(1) : contextPath)
                 + "_" + bundleName

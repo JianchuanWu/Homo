@@ -1,8 +1,6 @@
 package org.homo.core.repository;
 
-import org.homo.core.annotation.Repository;
 import org.homo.core.model.BaseEntity;
-import org.homo.pocket.session.SessionFactory;
 import org.homo.pocket.session.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
@@ -18,10 +16,8 @@ public abstract class AbstractRepository<T extends BaseEntity> implements HomoRe
 
     protected Session session;
 
-    public void installSession() {
-        Repository repository = this.getClass().getAnnotation(Repository.class);
-        this.session = SessionFactory.getSession(repository.session());
-        this.session.open();
+    public void setSession(Session session) {
+        this.session = session;
     }
 
     public RepositoryProxy<T> getProxy() {
