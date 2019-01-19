@@ -7,7 +7,7 @@ Little scaffold
 #### About me
 [![github](https://img.shields.io/badge/GitHub-leyan95-blue.svg)](https://github.com/leyan95)
 
-> 一个清新脱俗的小框架，欢迎 request
+> 一个清新脱俗的小框架
 
 ## 多数据源配置
 **这里以MySQL数据库为例**
